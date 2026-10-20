@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#fff0dc">
+<title>ตรวจเลขฮานอยบ้านนิด</title>
+<style>
+:root{--cream:#fffaf1;--peach:#eee1d2;--purple:#9a7860;--deep:#5f4638;--orange:#a87952;--ink:#6d5547;--line:#d8c3ad}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(145deg,#fffdf8,#eee3d7);font-family:system-ui,-apple-system,"Noto Sans Thai",sans-serif;color:var(--ink);padding:18px 12px 34px}
+main{max-width:560px;margin:auto;background:rgba(255,255,255,.9);border:2px solid var(--line);border-radius:30px;padding:22px 18px 26px;box-shadow:0 8px 0 rgba(100,72,52,.08),0 12px 30px #6f503018}
+.heading{display:flex;align-items:center;gap:14px;margin:4px 0 20px;color:#5f4638}
+.logo{width:58px;height:58px;display:grid;place-items:center;background:#efe3d7;border:1px solid #d6c0ab;border-radius:22px;font-size:28px}
+h1{font-size:clamp(22px,5vw,30px);margin:0;line-height:1.35}
+button,select,input{font:inherit}
+.big-purple{width:100%;border:0;border-radius:26px;padding:18px 12px;background:linear-gradient(#b89a81,#8d6b53);box-shadow:0 7px 0 #654936;color:#fff;font-size:21px;font-weight:800;margin:0 0 24px}
+.field{margin:18px 0}
+label{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;margin-bottom:10px}
+.mini{width:42px;height:42px;display:grid;place-items:center;background:#efd9f2;border:1px solid #cdaed1;border-radius:15px;color:#75517e;font-size:22px}
+select,input{width:100%;min-height:62px;border:1.5px solid #dfb88c;border-radius:25px;padding:12px 16px;background:#fffdf9;color:#6d5547;font-size:18px;outline-color:#a77bb2}
+.switch{display:flex;gap:8px;background:#fffdf9;padding:8px;border:1px solid #dfcfbe;border-radius:24px;margin:24px 0}
+.switch button{flex:1;border:1px solid #dfcfbe;background:#fffdf9;border-radius:20px;padding:16px 6px;color:#795f4e;font-weight:800}
+.switch button.active{background:linear-gradient(#c5a183,#987052);color:#fff;box-shadow:0 5px 0 #77543b}
+.orange{width:100%;border:0;border-radius:26px;padding:20px 12px;background:linear-gradient(#c49a75,#956b4b);box-shadow:0 7px 0 #6d4b32;color:#fff;font-size:23px;font-weight:900;margin-top:8px}
+.result{display:none;margin-top:20px;border:1px solid #d8c5b2;border-radius:22px;padding:16px;background:#fffdf9;line-height:1.7}
+.result.show{display:block}.result strong{color:#5f4638;font-size:20px}
+.hint{font-size:13px;line-height:1.6;color:#8c796b;margin:16px 4px 0}
+footer{text-align:center;font-size:12px;color:#8c796b;margin-top:20px}
+</style>
+</head>
+<body>
+<main>
+  <div class="heading"><div class="logo">✦</div><h1>ตรวจเลขฮานอยบ้านนิด</h1></div>
+  <button class="big-purple" type="button" onclick="document.querySelector('#number').focus()">✦ ตรวจ 4 ตัวหน้า</button>
+
+  <div class="field">
+    <label for="rate"><span class="mini">☆</span>เลือกเรท</label>
+    <select id="rate"><option>คู่ 50 รับ 45000</option><option>คู่ 20 รับ 18000</option><option>คู่ 10 รับ 9000</option></select>
+  </div>
+  <div class="field">
+    <label for="set"><span class="mini">✿</span>เลือกชุดไฟล์</label>
+    <select id="set"><option value="demo">ชุดตัวอย่างสำหรับทดลอง</option><option value="custom">ชุดเลขที่กรอกเอง</option></select>
+  </div>
+  <div class="switch">
+    <button id="checkBtn" class="active" type="button" onclick="setMode('check')">♡ ตรวจเลข</button>
+    <button id="panelBtn" type="button" onclick="setMode('panel')">▦ ตรวจแผง</button>
+  </div>
+  <div class="field">
+    <label for="number"><span class="mini">♡</span><span id="inputLabel">กรอกเลข 4 ตัว</span></label>
+    <input id="number" inputmode="numeric" autocomplete="off" maxlength="4" placeholder="กรอกเลข 4 ตัว">
+  </div>
+  <div class="field" id="customField" hidden>
+    <label for="numbers"><span class="mini">✎</span>กรอกเลขในชุด (คั่นด้วยช่องว่างหรือขึ้นบรรทัดใหม่)</label>
+    <textarea id="numbers" rows="4" style="width:100%;border:1.5px solid #dfb88c;border-radius:20px;padding:12px;background:#fffdf9;color:#6d5547;font:inherit" placeholder="เช่น 1234 5678 0099"></textarea>
+  </div>
+  <button class="orange" type="button" onclick="checkNumber()">⌕ ตรวจเลข</button>
+  <div class="result" id="result" aria-live="polite"></div>
+  <p class="hint">หมายเหตุ: ชุดตัวเลขในตัวอย่างมีไว้ทดลองการทำงานเท่านั้น ต้องใส่ข้อมูลที่คุณต้องการตรวจเอง ผลตรวจอ้างอิงเฉพาะข้อมูลที่อยู่ในหน้านี้</p>
+  <footer>หน้าเว็บตัวอย่างโทนน้ำตาล ครีม และขาว • ปรับแต่งชื่อและข้อมูลได้</footer>
+</main>
+<script>
+let mode='check';
+const sampleNumbers=['1234','5678','0099','2026','4567','8888'];
+function setMode(next){
+  mode=next;
+  document.querySelector('#checkBtn').classList.toggle('active',mode==='check');
+  document.querySelector('#panelBtn').classList.toggle('active',mode==='panel');
+  document.querySelector('#inputLabel').textContent=mode==='check'?'กรอกเลข 4 ตัว':'กรอกเลขสำหรับค้นหาในแผง';
+  document.querySelector('#number').placeholder=mode==='check'?'กรอกเลข 4 ตัว':'กรอกเลขที่ต้องการค้นหา';
+  document.querySelector('#customField').hidden=document.querySelector('#set').value!=='custom';
+}
+document.querySelector('#set').addEventListener('change',e=>{
+  document.querySelector('#customField').hidden=e.target.value!=='custom';
+});
+document.querySelector('#number').addEventListener('input',e=>{
+  e.target.value=e.target.value.replace(/\D/g,'').slice(0,4);
+});
+function checkNumber(){
+  const n=document.querySelector('#number').value.trim();
+  const result=document.querySelector('#result');
+  if(!/^\d{4}$/.test(n)){result.className='result show';result.innerHTML='<strong>กรุณากรอกตัวเลขให้ครบ 4 หลัก</strong>';return;}
+  const list=document.querySelector('#set').value==='custom'
+    ? document.querySelector('#numbers').value.match(/\d{4}/g)||[]
+    : sampleNumbers;
+  const found=list.includes(n);
+  result.className='result show';
+  if(mode==='panel'){
+    result.innerHTML='<strong>ผลค้นหาในแผง</strong><br>เลขที่ค้นหา: <strong>'+n+'</strong><br>'+(found?'พบเลขนี้ในชุดข้อมูลที่เลือก':'ไม่พบเลขนี้ในชุดข้อมูลที่เลือก')+'<br><small>ชุดตัวอย่าง: '+list.join(' · ')+'</small>';
+  }else{
+    result.innerHTML='<strong>ผลตรวจเลข</strong><br>เลขที่กรอก: <strong>'+n+'</strong><br>'+(found?'พบเลขนี้ในชุดข้อมูลที่เลือก':'ไม่พบเลขนี้ในชุดข้อมูลที่เลือก')+'<br><small>ผลนี้เป็นการเปรียบเทียบกับรายการเลขที่ป้อนในหน้าเว็บเท่านั้น</small>';
+  }
+}
+</script>
+</body>
+</html>
